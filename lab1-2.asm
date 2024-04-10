@@ -29,7 +29,7 @@ add_signed_sum
     ldr r9, [r0], #4 ; r9 = *r0, r0 = r0 + 4
     adds r7, r7, r9 ; sum with signed
     ; movvs r5, #1 ; move 1 to r5 if overflow
-    subs r1, r1, #1
+    sub r1, r1, #1
     bne add_signed_sum
     mov pc, lr
 
@@ -37,7 +37,7 @@ add_unsigned_sum
     ldr r9, [r0], #4 ; r9 = *r0, r0 = r0 + 4
     adds r8, r8, r9
     movvs r6, #1 ; move 1 to r6 if overflow
-    subs r1, r1, #1
+    sub r1, r1, #1
     bne add_unsigned_sum
     mov pc, lr
 
