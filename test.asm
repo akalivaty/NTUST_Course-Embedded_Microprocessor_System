@@ -1,50 +1,77 @@
     AREA ArrayData, DATA, READWRITE
 
 ArrayA
-    ; DCD -10, 11, 20, 50, -20, -3
-    DCD 0x7f000000, 0x7f000000, 0x7f000000;, 20, 50, -20, -3
+    dcd -10, 11, 20, 50, -20, -3 ; Declare an array of 6 elements
 
-    AREA adder, CODE, READONLY ; mark first instruction
-num equ 6
+ArrayB space 24
+
+ArrayC space 24
+
+    AREA Matrix, CODE, READONLY
+
+num equ 6   ; set the number of elements in the array
+
     ENTRY
 
 main
-    ldr r1, =ArrayA
-    mov r2, #num ; loop times
-    mov r4, #0 ; sum
-    mov r5, #0 ; set 1 if overflow
-    str pc, [sp, #-4]! ; save main function address
-    bl signed_adder
+
+    ldr r0, =ArrayA
+    ldr r1, =ArrayB
+
+    ; copy ArrayA to ArrayB
+    mov r3, #num ; loop times
+    mov r9, r1 ; r9 = &r1
+    bl copy_array
+
+    ; sort signed numbers
+    mov r8, r1 ; record head of the array
+    mov r3, #num ; loop times
+    add r4, pc, #4 ; record the return address
+    str r4, [sp]
+    bl sort_signed_numbers
+
     b stop
 
-signed_adder
-    ldr r3, [r1], #4 ; load array element, then r1 = r1 + 4
-    bl check_data
-    sub r2, r2, #1 ; decrease loop times
-    cmp r2, #0 ; check if loop times is 0
-    bne signed_adder
-    mov pc, lr ; run out of loop times, return main function
+copy_array
+    ldr r10, [r0], #4
+    str r10, [r9], #4
+    subs r3, r3, #1
+    bne copy_array
+    mov pc, lr ; branch to the return address
 
-check_data
-    cmp r3, #0
-    bge positive ; jump to positive
-    blt negative ; jump to negative
+sort_signed_numbers
+    mov r5, r3 ; r5 = len
+    add r4, pc, #4
+    str r4, [sp, #4]!
+    bl signed_outer_loop
 
-positive
-    adds r4, r4, r3 ; sum
-    movvs r5, #1 ; check if overflow
+    mov r1, r8 ; mov pointer to the head of the array
+    subs r3, r3, #1 ; decrement loop times
+    bne sort_signed_numbers ; loop if loop times are not zero
+    ldr pc, [sp] ; branch to main function if loop times are zero
+
+signed_outer_loop
+    subs r5, r5, #1 ; r5 = len - 1
+    blne signed_inner_loop
+
+    cmp r5, #0
+    bne signed_outer_loop
+    ldr pc, [sp], #-4
+
+signed_inner_loop
+    ldr r9, [r1], #4 ; r9 = *r1, r1 = r1 + 4
+    ldr r10, [r1] ; r10 = *r1
+    subs r4, r9, r10
+    movpl r12, r9
+    strpl r12, [r1], #-4
+    strpl r10, [r1], #4 ; move pointer to next element
+
     mov pc, lr
 
-negative
-    mvn r3, r3 ; 1's complement
-    add r3, r3, #1 ; 2's complement
-    subs r4, r4, r3 ; sum
-    movvs r5, #1 ; check if overflow
-    mov pc, lr
-
+    
 stop
-    mov r1, #0x18               ; angel_SWIreason_ReportException
-    ldr r2, =0x20026            ; ADP_Stopped_ApplicationExit
+    mov r0, #0x18               ; angel_SWIreason_ReportException
+    ldr r1, =0x20026            ; ADP_Stopped_ApplicationExit
     swi 0x123456                ; ARM semihosting SWI
 
-    end                         ; Mark end of file
+    end ; Mark end of file

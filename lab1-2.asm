@@ -7,6 +7,8 @@ ArrayB space 24
 
 ArrayC space 24
 
+ArrayT space 8
+
     AREA Matrix, CODE, READONLY
 
 num equ 6   ; set the number of elements in the array
@@ -15,10 +17,6 @@ num equ 6   ; set the number of elements in the array
 
 main
     ldr r0, =ArrayA
-    ldr r1, =ArrayB
-    ldr r2, =ArrayC
-
-    ;
 
     ; sum signed numbers
     mov r3, #num ; loop times
@@ -36,7 +34,7 @@ main
     bl sum_unsigned_numbers
 
     b stop
-
+    
 sum_signed_numbers
     ldr r9, [r0], #4 ; r9 = *r0, r0 = r0 + 4
 
