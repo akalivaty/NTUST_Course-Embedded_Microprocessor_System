@@ -11,6 +11,7 @@ start
     adc r4, r0, r2  ; add with carry
 
     ; signed condition
+    mov r0, #0
     mov r1, #0x7f000000
     mov r2, #0
     mov r3, #0x7f000000
