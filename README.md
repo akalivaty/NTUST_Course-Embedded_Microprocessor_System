@@ -72,6 +72,42 @@ Result:
 
 ![result](img/lab2-3_result.png)
 
+## Lab3-1
+
+Question:
+
+![question](img/lab3-1.png)
+
+[Code](asm/lab3-1.asm)
+
+Result:
+
+![result](img/lab3-1_result.png)
+
+## Lab3-2
+
+Question:
+
+![question](img/lab3-2.png)
+
+[Code](asm/lab3-2.asm)
+
+Result:
+
+![result](img/lab3-2_result.png)
+
+## Lab3-3
+
+Question:
+
+![question](img/lab3-3.png)
+
+[Code](asm/lab3-3.asm)
+
+Result:
+
+![result](img/lab3-3_result.png)
+
 
 
 # Common Conditions
